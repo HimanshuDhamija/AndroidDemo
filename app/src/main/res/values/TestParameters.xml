@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Username and password-->
+    <item name="username" type="id">crazydog335</item>
+    <item name="password" type="id">venture</item>
+
+    <!-- Driver name -->
+    <item name="driverName" type="id">Sarah Scott</item>
+</resources>

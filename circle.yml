@@ -1,0 +1,36 @@
+#
+# Build configuration for Circle CI
+#
+machine:
+    environment:
+        PATH: "~/$CIRCLE_PROJECT_REPONAME/gradle-2.9/bin:$PATH"
+        ADB_INSTALL_TIMEOUT: "10"
+        GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
+
+dependencies:
+    pre:
+        - wget "https://services.gradle.org/distributions/gradle-2.9-bin.zip"; unzip gradle-2.9-bin.zip
+        - echo y | android update sdk --no-ui --all --filter tools,platform-tools,build-tools-27.1.1,android-27,extra-google-m2repository,extra-google-google_play_services,extra-android-support
+
+test:
+    override:
+        #start the emulator
+        - emulator -avd circleci-android27 -no-audio -no-window:
+          background: true
+          parallel: true
+
+        # wait for it to boot
+        -cicle-android wait-for-boot
+
+        #unlock emulator screen
+        -sleep 30
+        -adb shell input keyevent 82
+
+        #run tests against emulator
+        - ./gradlew MainActivityTest -PdisablePreDex
+
+        #copy the build output to artifact
+        - cp -r app/build/outputs $CIRCLE_ARTIFACTS
+
+        #copy the test results to test result directory
+        - cp -r app/build/outputs/test-results/* $CIRCLE_TEST_REPORTS
