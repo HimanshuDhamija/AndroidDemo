@@ -3,14 +3,14 @@
 #
 machine:
     environment:
-        PATH: "~/$CIRCLE_PROJECT_REPONAME/gradle-2.9/bin:$PATH"
+        PATH: "~/$CIRCLE_PROJECT_REPONAME/gradle-3.1/bin:$PATH"
         ADB_INSTALL_TIMEOUT: "10"
         GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
 
 dependencies:
     pre:
-        - wget "https://services.gradle.org/distributions/gradle-2.9-bin.zip"; unzip gradle-2.9-bin.zip
-        - echo y | android update sdk --no-ui --all --filter tools,platform-tools,build-tools-27.1.1,android-27,extra-google-m2repository,extra-google-google_play_services,extra-android-support
+        - wget "https://services.gradle.org/distributions/gradle-3.1-bin.zip"; unzip gradle-3.1-bin.zip
+        - echo y | android update sdk --no-ui --all --filter tools,platform-tools,build-tools-27.0.3,android-27,extra-google-m2repository,extra-google-google_play_services,extra-android-support
 
 test:
     override:
