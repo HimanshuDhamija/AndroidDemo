@@ -1,13 +1,5 @@
 version: 2
 jobs:
-  shellcheck:
-      docker:
-        - image: circleci/android:api-28-alpha
-      steps:
-        - checkout
-        - run:
-            name: Accept license Script
-            command:  - sh ./sdkmanager_accept_licenses.sh
   build:
     android_config: &android_config
     working_directory: ~/code
@@ -21,6 +13,13 @@ jobs:
       - checkout
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+
+      - shellcheck:
+                  steps:
+                    - checkout
+                    - run:
+                        name: Accept license Script
+                        command:  - sh ./sdkmanager_accept_licenses.sh
 
       - run:
           name: Accept Licenses
