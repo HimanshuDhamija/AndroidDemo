@@ -1,11 +1,14 @@
 version: 2
 jobs:
   build:
+    android_config: &android_config
     working_directory: ~/code
     docker:
-      - image: circleci/android:api-26-alpha
+      - image: circleci/android:api-28-alpha
     environment:
-      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+      _JAVA_OPTIONS: "-Xmx2048m -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+      GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m"'
     steps:
       - checkout
       - restore_cache:
@@ -16,17 +19,45 @@ jobs:
           command: yes | sdkmanager --licenses
 
       - run:
+          name: Update SDK bundles
+          command: sdkmanager --update
+
+      - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
+
       - save_cache:
           paths:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+
       - run:
-          name: Run Tests
-          command: ./gradlew connectedAndroidTest -PdisablePreDex
+          name: Gradle build (debug)
+          command: ./gradlew -PciBuild=true assembleDebug assembleAndroidTest
+
       - store_artifacts:
-          path: app/build/reports
-          destination: reports
+          path: app/build/outputs/apk/
+          destination: /apk/
       - store_test_results:
           path: app/build/test-results
+
+#  deploy:
+#      docker:
+#        - image: circleci/android:api-28-alpha
+#
+#      steps:
+#        - run:
+#            name: Install awscli
+#            command: sudo pip install awscli
+#
+#  workflows:
+#      version: 2
+#      build-deploy:
+#        jobs:
+#          - build
+#          - deploy:
+#              requires:
+#                - build
+#              filters:
+#                branches:
+#                  only: master
