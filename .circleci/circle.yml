@@ -1,5 +1,13 @@
 version: 2
 jobs:
+  shellcheck:
+      docker:
+        - image: circleci/android:api-28-alpha
+      steps:
+        - checkout
+        - run:
+            name: Accept license Script
+            command:  - sh ./sdkmanager_accept_licenses.sh
   build:
     android_config: &android_config
     working_directory: ~/code
