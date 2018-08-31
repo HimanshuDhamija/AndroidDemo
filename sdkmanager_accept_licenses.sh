@@ -1,4 +1,4 @@
-export ANDROID_HOME="/opt/sdk/android-sdk-linux"
+export ANDROID_HOME="usr/local/Library/Android/sdk"
 export PATH="${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/platform-tools"
 
 cat > accept_android_licenses.sh <<EOF
